@@ -102,7 +102,7 @@ class EmailClassifier:
                 file_list = zip_ref.namelist()
                 
                 for file_name in file_list:
-                    if file_name.startswith(folder_name) and file_name.endswith('.json'):
+                    if file_name.startswith(folder_name) and (file_name.endswith('.json') or file_name.endswith('.txt')):
                         try:
                             with zip_ref.open(file_name) as file:
                                 content = file.read().decode('utf-8')
