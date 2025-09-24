@@ -50,9 +50,6 @@ class EmailClassifier:
         return str(text).lower()
 
     def analyze_email(self, name, email_data: Dict) -> bool:
-        # if not self.is_valid_email(email_data):
-        #     return False
-
         phishing_score = 0
         URL_score = 0
         
@@ -93,16 +90,12 @@ class EmailClassifier:
     def process_zip_archive(self, zip_path: str, folder_name: str) -> Tuple[int, int]:
         phishing_count = 0
         non_phishing_count = 0
-        true_count=0 
-        mistake_count=0
         
-
         try:
             with zipfile.ZipFile(zip_path, 'r') as zip_ref:
                 file_list = zip_ref.namelist()
-                
                 for file_name in file_list:
-                    if file_name.startswith(folder_name) and (file_name.endswith('.json') or file_name.endswith('.txt')):
+                    if file_name.startswith(folder_name): 
                         try:
                             with zip_ref.open(file_name) as file:
                                 content = file.read().decode('utf-8')
@@ -133,7 +126,7 @@ class EmailClassifier:
             print(f"Неожиданная ошибка: {e}")
             return 0, 0
 
-        return phishing_count, non_phishing_count, true_count, mistake_count
+        return phishing_count, non_phishing_count
 
 def main():
     parser = argparse.ArgumentParser(description='Классификатор писем на фишинговые и не фишинговые')
@@ -148,7 +141,7 @@ def main():
         folder = args.folder
     
     classifier = EmailClassifier()
-    phishing, non_phishing, true_count, mistake_count = classifier.process_zip_archive(args.zip_file, folder) # , true_count, mistake_count 
+    phishing, non_phishing = classifier.process_zip_archive(args.zip_file, folder) 
     
     print(f"Фишинговые письма: {phishing}")
     print(f"Не фишинговые письма: {non_phishing}")
